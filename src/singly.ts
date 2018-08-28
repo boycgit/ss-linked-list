@@ -1,6 +1,7 @@
 import { SinglyNode } from './node';
+import { invariant } from './util';
 
-export default class SinglyList<T> {
+export class SinglyList<T> {
   private _head: SinglyNode<T> | null;
   private _tail: SinglyNode<T> | null;
   private _length: number;
@@ -39,6 +40,31 @@ export default class SinglyList<T> {
 
   [Symbol.iterator]() {
     return this.iterator();
+  }
+
+  getNode(position: number): SinglyNode<T> | null {
+    let length = this._length;
+
+    // 1st use-case: invalid position
+    invariant(
+      length > 0 && position >= 0 && position < length,
+      `[singly-list] index ${position} out of scope of list, which length is ${length}`
+    );
+
+    let currentNode = this._head as SinglyNode<T>;
+    let count = 0;
+    // 2nd use-case: a valid position
+    while (count < position) {
+      currentNode = <SinglyNode<T>>currentNode.next;
+      count++;
+    }
+
+    return currentNode;
+  }
+
+  get(position: number): T | null {
+    const node = this.getNode(position);
+    return node ? node.value : null;
   }
 
   // Adds the element at the end of the linked list
@@ -155,6 +181,7 @@ export default class SinglyList<T> {
   }
 
   first(num: number): T[] {
+    invariant(num > 0, `[linked-list] param 'num' (${num}) should greater than 0`)
     let iter = this.iterator();
     let result: T[] = [];
 
