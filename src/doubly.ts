@@ -1,9 +1,9 @@
-import { SinglyNode } from './node';
+import { DoublyNode } from './node';
 import { invariant } from './util';
 
-export class SinglyList<T> {
-  private _head: SinglyNode<T> | null;
-  private _tail: SinglyNode<T> | null;
+export class DoublyList<T> {
+  private _head: DoublyNode<T> | null;
+  private _tail: DoublyNode<T> | null;
   private _length: number;
 
   constructor(...values: T[]) {
@@ -42,7 +42,7 @@ export class SinglyList<T> {
     return this.iterator();
   }
 
-  getNode(position: number): SinglyNode<T> | null {
+  getNode(position: number): DoublyNode<T> | null {
     let length = this._length;
 
     // 1st use-case: invalid position
@@ -51,11 +51,11 @@ export class SinglyList<T> {
       `[singly-list] index ${position} out of scope of list, which length is ${length}`
     );
 
-    let currentNode = this._head as SinglyNode<T>;
+    let currentNode = this._head as DoublyNode<T>;
     let count = 0;
     // 2nd use-case: a valid position
     while (count < position) {
-      currentNode = <SinglyNode<T>>currentNode.next;
+      currentNode = <DoublyNode<T>>currentNode.next;
       count++;
     }
 
@@ -69,12 +69,13 @@ export class SinglyList<T> {
 
   // Adds the element at the end of the linked list
   append(val: T): boolean {
-    let node = new SinglyNode<T>(val);
+    let node = new DoublyNode<T>(val);
 
     if (!this._tail) {
       this._head = this._tail = node;
     } else {
       this._tail.next = node;
+      node.prev = this._tail;
       this._tail = node;
     }
 
@@ -83,11 +84,12 @@ export class SinglyList<T> {
   }
   // Add the element at the beginning of the linked list
   prepend(val: T): boolean {
-    let node = new SinglyNode<T>(val);
+    let node = new DoublyNode<T>(val);
     if (!this._head) {
       this._head = this._tail = node;
     } else {
       node.next = this._head;
+      this._head.prev = node;
       this._head = node;
     }
     this._length++;
@@ -101,35 +103,35 @@ export class SinglyList<T> {
     if (!currentNode) {
       return;
     }
-
+    // 当首个元素恰好是目标值的时候
     if (currentNode.value === val) {
       // 这里需要注意，有两种情况：
-      if (currentNode.next) {
-        // 链表多于 1 个元素
-        this._head = currentNode.next;
-        currentNode.next = null;
-      } else {
-        // 链表只有 1 个元素
+      if (currentNode.next){ // 链表多于 1 个元素
+        this._head = currentNode.next as DoublyNode<T>;
+        this._head.prev = null;
+        currentNode.next = currentNode.prev = null;
+      } else { // 链表只有 1 个元素
         this._head = this._tail = null;
       }
       this._length--;
       return val;
     } else {
-      let prevNode = currentNode;
       while (true) {
         if (currentNode.value === val) {
           if (currentNode.next) {
-            prevNode.next = currentNode.next;
-          } else {
             // special case for last element
-            this._tail = prevNode;
+            (currentNode.prev as DoublyNode<T>).next = currentNode.next;
+            currentNode.next.prev = currentNode.prev;
+            currentNode.next = currentNode.prev = null;
+          } else {
+            (currentNode.prev as DoublyNode<T>).next = null;
+            this._tail = currentNode.prev;
+            currentNode.next = currentNode.prev = null;
           }
-          currentNode.next = null;
           this._length--;
-          return val;
+          return currentNode.value;
         } else {
           if (currentNode.next) {
-            prevNode = currentNode;
             currentNode = currentNode.next;
           } else {
             return;
@@ -148,11 +150,12 @@ export class SinglyList<T> {
     }
 
     // single item list
-    if (!(this._head as SinglyNode<T>).next) {
+    if (!(this._head as DoublyNode<T>).next) {
       this._head = null;
       this._tail = null;
       // full list
     } else {
+      ((currentNode as DoublyNode<T>).next as DoublyNode<T>).prev = null;
       this._head = currentNode.next;
       currentNode.next = null;
     }
@@ -169,18 +172,14 @@ export class SinglyList<T> {
     }
 
     // single item list
-    if (!(this._head as SinglyNode<T>).next) {
+    if (!(this._head as DoublyNode<T>).next) {
       this._head = null;
       this._tail = null;
       // full list
     } else {
-      // start traversal from head
-      let currentNode = this._head as SinglyNode<T>;
-      while (currentNode.next !== tailNode) {
-        currentNode = currentNode.next as SinglyNode<T>;
-      }
-      currentNode.next = null;
-      this._tail = currentNode;
+      ((tailNode as DoublyNode<T>).prev as DoublyNode<T>).next = null;
+      this._tail = tailNode.prev;
+      tailNode.next = tailNode.prev = null;
     }
 
     this._length--;
@@ -212,21 +211,22 @@ export class SinglyList<T> {
     if (!this._head) {
       return;
     }
-    let currentNode: SinglyNode<T> | null = this._head;
-    let prevNode: SinglyNode<T> | null = null;
-    let nextNode: SinglyNode<T> | null;
+    let currentNode: DoublyNode<T> | null = this._head;
+    let prevNode: DoublyNode<T> | null = null;
+    let nextNode: DoublyNode<T> | null;
     this._tail = this._head;
     while (currentNode !== null) {
       nextNode = currentNode.next;
       currentNode.next = prevNode;
+      currentNode.prev = nextNode;
       prevNode = currentNode;
       currentNode = nextNode;
     }
     this._head = prevNode;
   }
 
-  clone(): SinglyList<T> {
+  clone(): DoublyList<T> {
     const arrValue = this.toArray();
-    return new SinglyList<T>(...arrValue);
+    return new DoublyList<T>(...arrValue);
   }
 }
