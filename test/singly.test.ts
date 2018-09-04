@@ -8,6 +8,7 @@ describe('单向链表 - 构造函数', () => {
     expect(a.length).toBe(0);
     expect(a.head).toBeNull();
     expect(a.tail).toBeNull();
+    expect(a.loopLength).toBe(0);
   });
 
   test('默认接受多个参数，生成单向链表', () => {
@@ -16,6 +17,7 @@ describe('单向链表 - 构造函数', () => {
     expect(a.length).toBe(arr.length);
     expect(a.head).toBe(arr[0]);
     expect(a.tail).toBe(arr[arr.length - 1]);
+    expect(a.loopLength).toBe(0);
   });
 });
 
@@ -24,6 +26,10 @@ describe('单向链表 - 迭代器', () => {
   beforeEach(() => {
     arr = chance.n(chance.integer, chance.integer({ min: 1, max: 10 }));
     a = new SinglyList(...arr);
+  });
+
+  afterEach(() => {
+    expect(a.loopLength).toBe(0);
   });
   test('调用 toArray，将列表转换成数组', () => {
     expect(a.toArray()).toEqual(arr);
@@ -37,6 +43,7 @@ describe('单向链表 - 迭代器', () => {
     const b = a.clone();
     expect([...b]).toEqual(arr);
     expect(b).toBeInstanceOf(SinglyList);
+    expect(b.loopLength).toBe(0);
   });
 });
 
@@ -45,6 +52,9 @@ describe('单向链表 - get 方法', () => {
   beforeEach(() => {
     arr = chance.n(chance.integer, chance.integer({ min: 1, max: 10 }));
     a = new SinglyList(...arr);
+  });
+  afterEach(() => {
+    expect(a.loopLength).toBe(0);
   });
   test('获取指定位置的元素', () => {
     var index = chance.integer({ min: 0, max: arr.length - 1 });
@@ -77,6 +87,9 @@ describe('单向链表 - append 方法', () => {
     arr = chance.n(chance.integer, chance.integer({ min: 1, max: 10 }));
     a = new SinglyList(...arr);
   });
+  afterEach(() => {
+    expect(a.loopLength).toBe(0);
+  });
   test('在链表末尾新增元素', () => {
     const newValue = chance.integer();
     const prevLength = a.length;
@@ -94,6 +107,7 @@ describe('单向链表 - append 方法', () => {
     expect(b.head).toBe(newValue);
     expect(b.tail).toBe(newValue);
     expect(b.length).toBe(prevLength + 1);
+    expect(b.loopLength).toBe(0);
   });
 });
 
@@ -102,6 +116,9 @@ describe('单向链表 - prepend 方法', () => {
   beforeEach(() => {
     arr = chance.n(chance.integer, chance.integer({ min: 1, max: 10 }));
     a = new SinglyList(...arr);
+  });
+  afterEach(() => {
+    expect(a.loopLength).toBe(0);
   });
   test('在链表头部新增元素', () => {
     const newValue = chance.integer();
@@ -120,14 +137,18 @@ describe('单向链表 - prepend 方法', () => {
     expect(b.head).toBe(newValue);
     expect(b.tail).toBe(newValue);
     expect(b.length).toBe(prevLength + 1);
+    expect(b.loopLength).toBe(0);
   });
 });
 
 describe('单向链表 - remove 方法', () => {
   let a, arr;
   beforeEach(() => {
-    arr = chance.n(chance.integer, chance.integer({ min: 1, max: 10 }));
+    arr = chance.n(chance.integer, chance.integer({ min: 2, max: 10 }));
     a = new SinglyList(...arr);
+  });
+  afterEach(() => {
+    expect(a.loopLength).toBe(0);
   });
   test('在链表中删除指定元素', () => {
     const index = chance.integer({ min: 1, max: arr.length - 1 });
@@ -141,6 +162,7 @@ describe('单向链表 - remove 方法', () => {
     expect(b.remove(arr[0])).toBe(arr[0]);
     expect(b.head).toBeNull();
     expect(b.tail).toBeNull();
+    expect(b.loopLength).toBe(0);
   });
 });
 
@@ -149,6 +171,9 @@ describe('单向链表 - removeHead 方法', () => {
   beforeEach(() => {
     arr = chance.n(chance.integer, chance.integer({ min: 1, max: 10 }));
     a = new SinglyList(...arr);
+  });
+  afterEach(() => {
+    expect(a.loopLength).toBe(0);
   });
   test('在链表中删除头部元素', () => {
     const prevLength = a.length;
@@ -160,12 +185,14 @@ describe('单向链表 - removeHead 方法', () => {
     expect(b.removeHead()).toBe(arr[0]);
     expect(b.head).toBeNull();
     expect(b.tail).toBeNull();
+    expect(b.loopLength).toBe(0);
   });
   test('当没有元素时，删除头部元素将直接返回 undefinded', () => {
     const b = new SinglyList();
     expect(b.removeHead()).toBeUndefined();
     expect(b.head).toBeNull();
     expect(b.tail).toBeNull();
+    expect(b.loopLength).toBe(0);
   });
 });
 
@@ -174,6 +201,9 @@ describe('单向链表 - removeTail 方法', () => {
   beforeEach(() => {
     arr = chance.n(chance.integer, chance.integer({ min: 1, max: 10 }));
     a = new SinglyList(...arr);
+  });
+  afterEach(() => {
+    expect(a.loopLength).toBe(0);
   });
   test('在链表中删除尾部元素', () => {
     const prevLength = a.length;
@@ -185,12 +215,14 @@ describe('单向链表 - removeTail 方法', () => {
     expect(b.removeTail()).toBe(arr[0]);
     expect(b.head).toBeNull();
     expect(b.tail).toBeNull();
+    expect(b.loopLength).toBe(0);
   });
   test('当没有元素时，删除尾部元素将直接返回 undefinded', () => {
     const b = new SinglyList();
     expect(b.removeTail()).toBeUndefined();
     expect(b.head).toBeNull();
     expect(b.tail).toBeNull();
+    expect(b.loopLength).toBe(0);
   });
 });
 
@@ -199,6 +231,9 @@ describe('单向链表 - first 方法', () => {
   beforeEach(() => {
     arr = chance.n(chance.integer, chance.integer({ min: 1, max: 10 }));
     a = new SinglyList(...arr);
+  });
+  afterEach(() => {
+    expect(a.loopLength).toBe(0);
   });
   test('在链表中获取前 n 个数据', () => {
     const n = chance.integer({ min: 0, max: arr.length - 1 });
@@ -225,5 +260,50 @@ describe('单向链表 - reverse 方法', () => {
     const a = new SinglyList(...arr);
     a.reverse();
     expect([...a]).toEqual([...arr.reverse()]);
+    expect(a.loopLength).toBe(0);
+  });
+});
+
+describe('单向链表 - isEmpty 方法', () => {
+  let val;
+  beforeEach(() => {
+    val = chance.integer();
+  });
+  test('长度为 1 的链表删除后为空链表', () => {
+    const a = new SinglyList(val);
+    a.removeHead();
+    expect(a.isEmpty()).toBeTruthy();
+    expect(a.loopLength).toBe(0);
+  });
+  test('长度为 0 的链表为空链表', () => {
+    const a = new SinglyList();
+    expect(a.isEmpty()).toBeTruthy();
+    expect(a.loopLength).toBe(0);
+  });
+});
+
+describe('单向链表 - indexOf 方法', () => {
+  let arr;
+  beforeEach(() => {
+    arr = chance.n(chance.integer, chance.integer({ min: 2, max: 10 }));
+  });
+  test('链表的 indexOf 操作等同于数组行为', () => {
+    const a = new SinglyList(...arr);
+    const index = chance.integer({ min: 0, max: a.length - 1 });
+    expect(a.indexOf(arr[index])).toBe(index);
+    expect(a.indexOf(arr[a.length - 1])).toBe(a.length - 1); // 最后一个元素
+    expect(a.loopLength).toBe(0);
+  });
+  test('长度为 1 的链表', () => {
+    const a = new SinglyList(arr[0]);
+    expect(a.indexOf(arr[1])).toBe(-1);
+    expect(a.indexOf(arr[0])).toBe(0); // 第一个元素
+    expect(a.loopLength).toBe(0);
+  });
+  test('长度为 0 的链表为空链表，应该返回 -1', () => {
+    const a = new SinglyList();
+    const val = chance.integer();
+    expect(a.indexOf(val)).toBe(-1);
+    expect(a.loopLength).toBe(0);
   });
 });

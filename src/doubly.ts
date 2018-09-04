@@ -1,10 +1,10 @@
 import { DoublyNode } from './node';
-import { invariant } from './util';
+import { invariant, INDEX_NOT_FOUND } from './util';
 
 export class DoublyList<T> {
-  private _head: DoublyNode<T> | null;
-  private _tail: DoublyNode<T> | null;
-  private _length: number;
+  protected _head: DoublyNode<T> | null;
+  protected _tail: DoublyNode<T> | null;
+  protected _length: number;
 
   constructor(...values: T[]) {
     this._head = null;
@@ -27,6 +27,39 @@ export class DoublyList<T> {
 
   get length(): number {
     return this._length;
+  }
+
+  get loopLength(): number {
+    let isLoop: boolean = false;
+    let loopLength = 1;
+
+    if (!this._head) {
+      return 0;
+    }
+
+    let p1 = this._head as DoublyNode<T>;
+    let p2 = this._head as DoublyNode<T>;
+
+    while (p2.next && p2.next.next) {
+      p2 = p2.next.next as DoublyNode<T>;
+      p1 = p1.next as DoublyNode<T>;
+
+      if (p1 === p2) {
+        isLoop = true;
+        break;
+      }
+    }
+
+    if (isLoop) {
+      p2 = p2.next as DoublyNode<T>;
+      while (p1 !== p2) {
+        loopLength++;
+        p2 = p2.next as DoublyNode<T>;
+      }
+      return loopLength;
+    } else {
+      return 0;
+    }
   }
 
   *iterator(): IterableIterator<T> {
@@ -96,6 +129,29 @@ export class DoublyList<T> {
     return true;
   }
 
+  indexOf(val: T): Number {
+    let currentNode = this._head;
+    if (!currentNode) {
+      return INDEX_NOT_FOUND;
+    }
+    let count = -1;
+    // 多余 1 个节点的情况
+    while (currentNode.next) {
+      count++;
+      if (currentNode.value === val) {
+        return count;
+      }
+      currentNode = currentNode.next;
+    }
+
+    // 如果是末尾节点，需要额外处理
+    if (currentNode === this._tail && currentNode.value === val) {
+      count += 1;
+    }
+
+    return count;
+  }
+
   // remove by value
   remove(val: T): T | void {
     let currentNode = this._head;
@@ -106,11 +162,13 @@ export class DoublyList<T> {
     // 当首个元素恰好是目标值的时候
     if (currentNode.value === val) {
       // 这里需要注意，有两种情况：
-      if (currentNode.next){ // 链表多于 1 个元素
+      if (currentNode.next) {
+        // 链表多于 1 个元素
         this._head = currentNode.next as DoublyNode<T>;
         this._head.prev = null;
         currentNode.next = currentNode.prev = null;
-      } else { // 链表只有 1 个元素
+      } else {
+        // 链表只有 1 个元素
         this._head = this._tail = null;
       }
       this._length--;
@@ -228,5 +286,123 @@ export class DoublyList<T> {
   clone(): DoublyList<T> {
     const arrValue = this.toArray();
     return new DoublyList<T>(...arrValue);
+  }
+
+  isEmpty(): boolean {
+    return this._head === null;
+  }
+}
+
+// 循环链表中的大部分方法，都可以转换成双向链表
+// 每次操作之前将列表断开，执行完后再结合
+
+export class CircleDoublyList<T> extends DoublyList<T> {
+  breakCircle() {
+    if (this._tail && this._head && this._tail.next === this._head) {
+      this._tail.next = null;
+      this._head.prev = null;
+    }
+  }
+
+  cyclization() {
+    if (this._head && this._tail && this._tail.next === null) {
+      this._tail.next = this._head;
+      this._head.prev = this._tail;
+    }
+  }
+
+  constructor(...values: T[]) {
+    super(...values);
+    this.cyclization();
+  }
+
+  *iterator(): IterableIterator<T> {
+    let currentNode = this._head;
+
+    while (currentNode) {
+      yield currentNode.value;
+      currentNode = currentNode.next;
+
+      // 如果下一个节点是 head，说明回到循环列表的头部了
+      if (currentNode === this._head) {
+        currentNode = null;
+      }
+    }
+  }
+
+  *circleIterator(): IterableIterator<T> {
+    let currentNode = this._head;
+
+    while (currentNode) {
+      yield currentNode.value;
+      currentNode = currentNode.next;
+    }
+  }
+
+  [Symbol.iterator]() {
+    return this.iterator();
+  }
+
+  mapToNormalListFn(name, ...params) {
+    this.breakCircle();
+    var result = super[name].apply(this, params);
+    this.cyclization();
+    return result;
+  }
+
+  getNode(position: number): DoublyNode<T> | null {
+    return this.mapToNormalListFn('getNode', position);
+  }
+
+  append(val: T): boolean {
+    return this.mapToNormalListFn('append', val);
+  }
+
+  prepend(val: T): boolean {
+    return this.mapToNormalListFn('prepend', val);
+  }
+
+  indexOf(val: T): Number {
+    return this.mapToNormalListFn('indexOf', val);
+  }
+
+  remove(val: T): T | void {
+    return this.mapToNormalListFn('remove', val);
+  }
+
+  removeHead(): T | void {
+    return this.mapToNormalListFn('removeHead');
+  }
+
+  removeTail(): T | void {
+    return this.mapToNormalListFn('removeTail');
+  }
+
+  first(num: number): T[] {
+    invariant(
+      num >= 0,
+      `[linked-list] param 'num' (${num}) should not less than 0`
+    );
+    let iter = this.circleIterator();
+    let result: T[] = [];
+
+    for (let i = 0; i < num; i++) {
+      let val = iter.next();
+      result.push(val.value);
+    }
+    return result;
+  }
+
+  toArray(): T[] {
+    return this.mapToNormalListFn('toArray');
+  }
+
+  reverse(): void {
+    return this.mapToNormalListFn('reverse');
+  }
+
+  clone(): CircleDoublyList<T> {
+    const arrValue = this.toArray();
+    return new CircleDoublyList<T>(...arrValue);
   }
 }

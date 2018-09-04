@@ -4,7 +4,8 @@ Data Structure Serial -  Linked List
 
  - written in Typescript, with generics type templating
  - support for iterator and iterable protocols.
- - support Singly-Linked List、Doubly-Linked List
+ - support Singly-Linked List、Doubly-Linked List; and also Circle Singly or Doubly Linked List  
+ - fully tested
 
 ## Installation
 
@@ -44,6 +45,9 @@ npm run doc
 ```
 
 then open the generated `out/index.html` file in your browser.
+
+## todo
+ - detect has loop or not，[Detect a loop in cyclic/circular linked list](https://js-algorithms.tutorialhorizon.com/2015/12/25/detect-cyclic-circular-linked-list/)，and then [count loop length](https://js-algorithms.tutorialhorizon.com/2015/12/26/loop-length-cyclic-circular-list/) 
 
 ## License
 
