@@ -3,7 +3,6 @@ import { invariant } from './util';
 import List from './list';
 
 export class DoublyList<T> extends List<T, DoublyNode<T>> {
-
   constructor(...values: T[]) {
     super(...values);
   }
@@ -153,24 +152,7 @@ export class DoublyList<T> extends List<T, DoublyNode<T>> {
   }
 }
 
-// 循环链表中的大部分方法，都可以转换成双向链表
-// 每次操作之前将列表断开，执行完后再结合
-
-export class CircleDoublyList<T> extends DoublyList<T> {
-  breakCircle() {
-    if (this._tail && this._head && this._tail.next === this._head) {
-      this._tail.next = null;
-      this._head.prev = null;
-    }
-  }
-
-  cyclization() {
-    if (this._head && this._tail && this._tail.next === null) {
-      this._tail.next = this._head;
-      this._head.prev = this._tail;
-    }
-  }
-
+export abstract class AbstractCircleDoublyList<T> extends DoublyList<T> {
   constructor(...values: T[]) {
     super(...values);
     this.cyclization();
@@ -259,6 +241,33 @@ export class CircleDoublyList<T> extends DoublyList<T> {
 
   reverse(): void {
     return this.mapToNormalListFn('reverse');
+  }
+  abstract clone(): AbstractCircleDoublyList<T>;
+  abstract breakCircle(): void;
+  abstract cyclization(): void;
+}
+
+// 循环链表中的大部分方法，都可以转换成双向链表
+// 每次操作之前将列表断开，执行完后再结合
+
+export class CircleDoublyList<T> extends AbstractCircleDoublyList<T> {
+  breakCircle() {
+    if (this._tail && this._head && this._tail.next === this._head) {
+      this._tail.next = null;
+      this._head.prev = null;
+    }
+  }
+
+  cyclization() {
+    if (this._head && this._tail && this._tail.next === null) {
+      this._tail.next = this._head;
+      this._head.prev = this._tail;
+    }
+  }
+
+  constructor(...values: T[]) {
+    super(...values);
+    this.cyclization();
   }
 
   clone(): CircleDoublyList<T> {

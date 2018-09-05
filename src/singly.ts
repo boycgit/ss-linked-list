@@ -1,6 +1,6 @@
 import { SinglyNode } from './node';
 import { invariant } from './util';
-import List, { CircleList } from './list';
+import List from './list';
 
 export class SinglyList<T> extends List<T, SinglyNode<T>> {
   constructor(...values: T[]) {
@@ -151,22 +151,7 @@ export class SinglyList<T> extends List<T, SinglyNode<T>> {
   }
 }
 
-// 循环链表中的大部分方法，都可以转换成单向链表
-// 每次操作之前将列表断开，执行完后再结合
-
-export class CircleSinglyList<T> extends SinglyList<T> {
-  breakCircle() {
-    if (this._tail && this._tail.next === this._head) {
-      this._tail.next = null;
-    }
-  }
-
-  cyclization() {
-    if (this._tail && this._tail.next === null) {
-      this._tail.next = this._head;
-    }
-  }
-
+export abstract class AbstractCircleSinglyList<T> extends SinglyList<T> {
   constructor(...values: T[]) {
     super(...values);
     this.cyclization();
@@ -255,6 +240,31 @@ export class CircleSinglyList<T> extends SinglyList<T> {
 
   reverse(): void {
     return this.mapToNormalListFn('reverse');
+  }
+  abstract clone(): AbstractCircleSinglyList<T>;
+  abstract breakCircle(): void;
+  abstract cyclization(): void;
+}
+
+// 循环链表中的大部分方法，都可以转换成单向链表
+// 每次操作之前将列表断开，执行完后再结合
+
+export class CircleSinglyList<T> extends AbstractCircleSinglyList<T> {
+  breakCircle() {
+    if (this._tail && this._tail.next === this._head) {
+      this._tail.next = null;
+    }
+  }
+
+  cyclization() {
+    if (this._tail && this._tail.next === null) {
+      this._tail.next = this._head;
+    }
+  }
+
+  constructor(...values: T[]) {
+    super(...values);
+    this.cyclization();
   }
 
   clone(): CircleSinglyList<T> {
