@@ -6,8 +6,8 @@ describe('单向循环链表 - 构造函数', () => {
   test('默认无参，生成空链表', () => {
     const a = new CircleSinglyList();
     expect(a.length).toBe(0);
-    expect(a.head).toBeNull();
-    expect(a.tail).toBeNull();
+    expect(a.head).toBeUndefined();
+    expect(a.tail).toBeUndefined();
     expect(a.loopLength).toBe(0);
   });
 
@@ -168,8 +168,8 @@ describe('单向循环链表 - remove 方法', () => {
   test('当只有 1 个元素时，删除后变成空列表', () => {
     const b = new CircleSinglyList(arr[0]);
     expect(b.remove(arr[0])).toBe(arr[0]);
-    expect(b.head).toBeNull();
-    expect(b.tail).toBeNull();
+    expect(b.head).toBeUndefined();
+    expect(b.tail).toBeUndefined();
     expect(b.loopLength).toBe(0);
   });
 });
@@ -189,15 +189,15 @@ describe('单向循环链表 - removeHead 方法', () => {
   test('当只有 1 个元素时，删除头部元素后变成空列表', () => {
     const b = new CircleSinglyList(arr[0]);
     expect(b.removeHead()).toBe(arr[0]);
-    expect(b.head).toBeNull();
-    expect(b.tail).toBeNull();
+    expect(b.head).toBeUndefined();
+    expect(b.tail).toBeUndefined();
     expect(b.loopLength).toBe(0);
   });
   test('当没有元素时，删除头部元素将直接返回 undefinded', () => {
     const b = new CircleSinglyList();
     expect(b.removeHead()).toBeUndefined();
-    expect(b.head).toBeNull();
-    expect(b.tail).toBeNull();
+    expect(b.head).toBeUndefined();
+    expect(b.tail).toBeUndefined();
     expect(b.loopLength).toBe(0);
   });
 });
@@ -217,15 +217,15 @@ describe('单向循环链表 - removeTail 方法', () => {
   test('当只有 1 个元素时，删除尾部元素后变成空列表', () => {
     const b = new CircleSinglyList(arr[0]);
     expect(b.removeTail()).toBe(arr[0]);
-    expect(b.head).toBeNull();
-    expect(b.tail).toBeNull();
+    expect(b.head).toBeUndefined();
+    expect(b.tail).toBeUndefined();
     expect(b.loopLength).toBe(0);
   });
   test('当没有元素时，删除尾部元素将直接返回 undefinded', () => {
     const b = new CircleSinglyList();
     expect(b.removeTail()).toBeUndefined();
-    expect(b.head).toBeNull();
-    expect(b.tail).toBeNull();
+    expect(b.head).toBeUndefined();
+    expect(b.tail).toBeUndefined();
     expect(b.loopLength).toBe(0);
   });
 });

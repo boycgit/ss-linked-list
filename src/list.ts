@@ -18,11 +18,11 @@ export default abstract class List<T, U extends ListNode<T>> {
     }
   }
 
-  get head(): T | null {
-    return this._head ? this._head.value : null;
+  get head(): T | void {
+    return this._head ? this._head.value : void 0;
   }
-  get tail(): T | null {
-    return this._tail ? this._tail.value : null;
+  get tail(): T | void {
+    return this._tail ? this._tail.value : void 0;
   }
 
   get length(): number {
