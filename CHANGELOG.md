@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.1.3"></a>
+## [1.1.3](https://github.com/boycgit/ss-linked-list/compare/v1.1.0...v1.1.3) (2018-10-22)
+
+
+### Bug Fixes
+
+* **fix:** fix null to void 0 , for value ([bb63b51](https://github.com/boycgit/ss-linked-list/commit/bb63b51))
+* **依赖:** 去掉不必要的依赖 ([743c782](https://github.com/boycgit/ss-linked-list/commit/743c782))
+
+
+### Features
+
+* **功能重构:** 使用 ss-comparator 代替默认的对比函数 ([f9d1379](https://github.com/boycgit/ss-linked-list/commit/f9d1379))
+
+
+
 <a name="1.1.0"></a>
 # 1.1.0 (2018-09-05)
 
