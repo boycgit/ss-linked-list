@@ -44,7 +44,7 @@ export class DoublyList<T> extends List<T, DoublyNode<T>> {
       return;
     }
     // 当首个元素恰好是目标值的时候
-    if (currentNode.value === val) {
+    if (this.compare.equal(currentNode.value, val)) {
       // 这里需要注意，有两种情况：
       if (currentNode.next) {
         // 链表多于 1 个元素
@@ -59,7 +59,7 @@ export class DoublyList<T> extends List<T, DoublyNode<T>> {
       return val;
     } else {
       while (true) {
-        if (currentNode.value === val) {
+        if (this.compare.equal(currentNode.value, val)) {
           if (currentNode.next) {
             // special case for last element
             (currentNode.prev as DoublyNode<T>).next = currentNode.next;

@@ -42,7 +42,7 @@ export class SinglyList<T> extends List<T, SinglyNode<T>> {
       return;
     }
 
-    if (currentNode.value === val) {
+    if (this.compare.equal(currentNode.value, val)) {
       // 这里需要注意，有两种情况：
       if (currentNode.next) {
         // 链表多于 1 个元素
@@ -57,7 +57,7 @@ export class SinglyList<T> extends List<T, SinglyNode<T>> {
     } else {
       let prevNode = currentNode;
       while (true) {
-        if (currentNode.value === val) {
+        if (this.compare.equal(currentNode.value, val)) {
           if (currentNode.next) {
             prevNode.next = currentNode.next;
           } else {

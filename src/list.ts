@@ -1,15 +1,18 @@
 import { ListNode } from './node';
 import { invariant, INDEX_NOT_FOUND } from './util';
+import Comparator from 'ss-comparator';
 
 export default abstract class List<T, U extends ListNode<T>> {
   protected _head: U | null;
   protected _tail: U | null;
   protected _length: number;
+  public compare: Comparator; 
 
   constructor(...values: T[]) {
     this._head = null;
     this._tail = null;
     this._length = 0;
+    this.compare = new Comparator();
 
     if (values.length > 0) {
       values.forEach(value => {
@@ -97,14 +100,14 @@ export default abstract class List<T, U extends ListNode<T>> {
     // 多余 1 个节点的情况
     while (currentNode.next) {
       count++;
-      if (currentNode.value === val) {
+      if (this.compare.equal(currentNode.value, val)) {
         return count;
       }
       currentNode = <U>currentNode.next;
     }
 
     // 如果是末尾节点，需要额外处理
-    if (currentNode === this._tail && currentNode.value === val) {
+    if (currentNode === this._tail && this.compare.equal(currentNode.value, val)) {
       count += 1;
     }
 
