@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.5](https://github.com/boycgit/ss-linked-list/compare/v1.1.4...v1.1.5) (2019-07-24)
+
+
+### Features
+
+* 🎸 功能新增: 新增 find 方法 ([3c72876](https://github.com/boycgit/ss-linked-list/commit/3c72876))
+
+
+
 <a name="1.1.4"></a>
 ## [1.1.4](https://github.com/boycgit/ss-linked-list/compare/v1.1.3...v1.1.4) (2018-10-24)
 
