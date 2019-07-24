@@ -1,6 +1,6 @@
 import { SinglyNode } from './node';
 import { invariant } from './util';
-import List from './list';
+import List, { IFindConition } from './list';
 
 export class SinglyList<T> extends List<T, SinglyNode<T>> {
   constructor(...values: T[]) {
@@ -203,6 +203,10 @@ export abstract class AbstractCircleSinglyList<T> extends SinglyList<T> {
     return this.mapToNormalListFn('prepend', val);
   }
 
+  find(condition: IFindConition<T>): SinglyNode<T> | null {
+    return this.mapToNormalListFn('find', condition);
+  }
+  
   indexOf(val: T): Number {
     return this.mapToNormalListFn('indexOf', val);
   }

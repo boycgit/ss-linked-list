@@ -45,6 +45,41 @@ describe('双向链表 - 迭代器', () => {
   });
 });
 
+describe('双向链表 - find 方法', () => {
+
+  test('直接根据 value 进行查找', () => {
+    const linkedList = new DoublyList();
+
+    expect(linkedList.find({ value: 5 })).toBeNull();
+
+    linkedList.append(1);
+    expect(linkedList.find({ value: 1 })).toBeDefined();
+
+    linkedList.append(2);
+    linkedList.append(3);
+
+    const node = linkedList.find({ value: 2 });
+
+    expect(node!.value).toBe(2);
+    expect(linkedList.find({ value: 5 })).toBeNull();
+  });
+
+  test('根据 callback 函数进行查找', () => {
+    const linkedList = new DoublyList<{ value: number, key: string }>();
+
+    linkedList.append({ value: 1, key: 'test1' });
+    linkedList.append({ value: 2, key: 'test2' });
+    linkedList.append({ value: 3, key: 'test3' });
+
+    const node = linkedList.find({ callback: value => value.key === 'test2' });
+
+    expect(node).toBeDefined();
+    expect(node!.value.value).toBe(2);
+    expect(node!.value.key).toBe('test2');
+    expect(linkedList.find({ callback: value => value.key === 'test5' })).toBeNull();
+  });
+});
+
 describe('双向链表 - get 方法', () => {
   let a, arr;
   beforeEach(() => {
@@ -128,7 +163,6 @@ describe('双向链表 - prepend 方法', () => {
   test('给空链表头部新增 1 个元素', () => {
     const b = new DoublyList();
     const newValue = chance.integer();
-    const prevLength = b.length;
     b.prepend(newValue);
     expect(b.head).toBe(newValue);
     expect(b.tail).toBe(newValue);

@@ -2,6 +2,7 @@ import { ListNode } from './node';
 import { invariant, INDEX_NOT_FOUND } from './util';
 import Comparator from 'ss-comparator';
 
+export interface IFindConition<T> { value?: T, callback?: (value: T) => boolean }
 export default abstract class List<T, U extends ListNode<T>> {
   protected _head: U | null;
   protected _tail: U | null;
@@ -88,6 +89,36 @@ export default abstract class List<T, U extends ListNode<T>> {
   get(position: number): T | null {
     const node = this.getNode(position);
     return node ? node.value : null;
+  }
+
+  /**
+   * 根据指定条件返回待查找的链表节点
+   * 
+   * @param {IFindConition<T>} { value, callback }
+   * @returns
+   * @memberof List
+   */
+  find({ value, callback }: IFindConition<T>) {
+    if (!this._head) {
+      return null;
+    }
+    let currentNode = <U>this._head;
+
+    while (currentNode) {
+      // If callback is specified then try to find node by callback.
+      if (callback && callback(currentNode.value)) {
+        return currentNode;
+      }
+
+      // If value is specified then try to compare by value..
+      if (value !== undefined && this.compare.equal(currentNode.value, value)) {
+        return currentNode;
+      }
+
+      currentNode = <U>currentNode.next;
+    }
+
+    return null;
   }
 
   indexOf(val: T): Number {

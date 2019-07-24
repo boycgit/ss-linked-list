@@ -1,6 +1,6 @@
 import { DoublyNode } from './node';
 import { invariant } from './util';
-import List from './list';
+import List, { IFindConition } from './list';
 
 export class DoublyList<T> extends List<T, DoublyNode<T>> {
   constructor(...values: T[]) {
@@ -202,6 +202,10 @@ export abstract class AbstractCircleDoublyList<T> extends DoublyList<T> {
 
   prepend(val: T): boolean {
     return this.mapToNormalListFn('prepend', val);
+  }
+
+  find(condition: IFindConition<T>): DoublyNode<T> | null {
+    return this.mapToNormalListFn('find', condition);
   }
 
   indexOf(val: T): Number {
